@@ -13,7 +13,9 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
+app.use('/js', express.static(path.join(__dirname, 'src', 'js'), { setHeaders: (res, filePath) => { if (filePath.endsWith('.js')) res.setHeader('Content-Type', 'application/javascript'); } }));
 app.use(express.static(path.join(__dirname, 'src')));
+app.get('/favicon.ico', (req, res) => res.status(204).end());
 
 /** Resolve current user — reads directly from Firestore */
 async function getSessionUser(req) {
