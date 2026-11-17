@@ -1,0 +1,8 @@
+node_modules/
+public/css/tailwind.css
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+serviceAccountKey.json

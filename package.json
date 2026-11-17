@@ -1,0 +1,21 @@
+{
+  "name": "findly",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Findly lost and found community platform",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "npx @tailwindcss/cli -i ./src/css/input.css -o ./public/css/tailwind.css --watch",
+    "build": "npx @tailwindcss/cli -i ./src/css/input.css -o ./public/css/tailwind.css --minify"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
+    "tailwindcss": "^4.1.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "firebase-admin": "^14.5.1"
+  }
+}

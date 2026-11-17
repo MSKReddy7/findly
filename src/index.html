@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en" class="h-full dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Findly — Simple, friendly community lost and found.">
+  <title>Findly — Lost & Found Made Simple</title>
+  <link href="./css/tailwind.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; }
+  </style>
+  <script>
+    // Default to dark mode
+    document.documentElement.classList.add('dark');
+  </script>
+</head>
+<body class="flex flex-col min-h-screen text-slate-800 dark:text-slate-100 antialiased selection:bg-indigo-500 selection:text-white bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
+
+  <!-- ================= HEADER / NAVBAR ================= -->
+  <header class="sticky top-0 z-40 border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md">
+    <div class="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-3">
+      <!-- Logo -->
+      <a href="#home" class="flex items-center gap-2 group">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white font-extrabold text-lg shadow-sm shadow-indigo-200 dark:shadow-none group-hover:bg-indigo-700 transition">
+          🔍
+        </div>
+        <span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">find<span class="text-indigo-600 dark:text-indigo-400">ly</span></span>
+      </a>
+
+      <!-- Simple Nav Links -->
+      <nav class="hidden md:flex items-center gap-1 font-semibold text-slate-600 dark:text-slate-300 text-sm">
+        <a href="#home" class="nav-link px-3.5 py-2 rounded-xl hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" data-nav="home">Home</a>
+        <a href="#explore" class="nav-link px-3.5 py-2 rounded-xl hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" data-nav="explore">Browse All</a>
+        <a href="#report" class="nav-link px-3.5 py-2 rounded-xl hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" data-nav="report">+ Report Item</a>
+        <a href="#my-reports" class="nav-link px-3.5 py-2 rounded-xl hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition" data-nav="my-reports">My Items</a>
+        <a href="#admin" id="nav-admin-link" class="nav-link hidden px-3 py-1.5 rounded-xl text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition text-xs font-bold" data-nav="admin">Admin</a>
+      </nav>
+
+      <!-- Right Controls -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <!-- Dark Mode Toggle Button -->
+        <button id="btn-theme-toggle" class="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Toggle Theme">
+          <span id="theme-icon-sun" class="hidden text-base">☀️</span>
+          <span id="theme-icon-moon" class="text-base">🌙</span>
+        </button>
+
+        <!-- Cloud Settings Button -->
+        <button id="btn-open-settings" class="p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Cloud Firestore Status">
+          <span>⚙️</span>
+        </button>
+
+        <!-- User Profile Switcher -->
+        <div class="relative">
+          <button id="btn-user-menu" class="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold hover:border-slate-300 dark:hover:border-slate-600 transition shadow-2xs">
+            <div id="user-avatar" class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-white font-bold text-xs uppercase">A</div>
+            <span id="user-display-name" class="font-bold text-slate-800 dark:text-slate-100 hidden sm:inline">Alex</span>
+            <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <!-- User Dropdown Menu -->
+          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-2 shadow-xl z-50 text-xs">
+            <div class="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
+              <p class="font-bold text-slate-900 dark:text-white" id="dropdown-name">Alex Rivera</p>
+              <p class="text-slate-500 dark:text-slate-400 text-[11px]" id="dropdown-email">alex.rivera@campus.edu</p>
+            </div>
+            <div class="py-1">
+              <p class="px-3 pt-2 pb-1 text-[10px] font-bold tracking-wider text-slate-400 uppercase">Switch Demo Account</p>
+              <button onclick="switchDemoUser('user_alex')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between">
+                <div>
+                  <div class="font-semibold text-slate-800 dark:text-slate-200">Alex Rivera</div>
+                  <div class="text-[10px] text-slate-400">Regular User</div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold">User</span>
+              </button>
+              <button onclick="switchDemoUser('user_maya')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between">
+                <div>
+                  <div class="font-semibold text-slate-800 dark:text-slate-200">Maya Lin</div>
+                  <div class="text-[10px] text-slate-400">Regular User</div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold">User</span>
+              </button>
+              <button onclick="switchDemoUser('user_sarah_admin')" class="w-full text-left px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center justify-between">
+                <div>
+                  <div class="font-semibold text-slate-800 dark:text-slate-200">Officer Sarah Chen</div>
+                  <div class="text-[10px] text-slate-400">Campus Moderator</div>
+                </div>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-400 font-bold">Admin</span>
+              </button>
+            </div>
+            <div class="pt-1 border-t border-slate-100 dark:border-slate-800 flex gap-1">
+              <button id="btn-custom-auth" class="flex-1 text-center py-2 font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 rounded-xl">Custom Sign In</button>
+              <button id="btn-sign-out" class="text-slate-500 hover:text-rose-600 px-3 py-2 font-medium hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl">Sign Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTENT VIEWS ================= -->
+  <main class="flex-1">
+
+    <!-- VIEW 1: HOME VIEW -->
+    <section id="view-home" class="view-section">
+      <!-- Friendly Hero -->
+      <div class="bg-gradient-to-b from-indigo-50/70 via-indigo-50/20 to-slate-50 dark:from-indigo-950/40 dark:via-slate-900/40 dark:to-slate-950 pt-12 pb-10 border-b border-slate-200/60 dark:border-slate-800">
+        <div class="mx-auto max-w-4xl px-4 text-center">
+          <div class="inline-flex items-center gap-2 rounded-full bg-indigo-100 dark:bg-indigo-950/80 px-3 py-1 text-xs font-bold text-indigo-700 dark:text-indigo-300 mb-4">
+            <span>🎉</span> Reconnecting community belongings
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+            Lost something? Let's get it back.
+          </h1>
+          <p class="mt-3 text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-xl mx-auto">
+            Search community listings or report an item in under a minute. Simple, safe, and helpful.
+          </p>
+
+          <!-- 2 Main Big Friendly Action Cards -->
+          <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto">
+            <!-- Lost Card -->
+            <a href="#report?type=lost" class="flex items-center gap-4 p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-rose-100 dark:border-rose-950 hover:border-rose-400 dark:hover:border-rose-500 hover:shadow-md transition text-left group">
+              <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 dark:bg-rose-950 text-rose-600 dark:text-rose-400 text-2xl group-hover:scale-110 transition shrink-0">
+                🔍
+              </div>
+              <div>
+                <h3 class="font-bold text-slate-900 dark:text-white text-base group-hover:text-rose-600 dark:group-hover:text-rose-400 transition">I Lost Something</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Post details so finders can reach you</p>
+              </div>
+            </a>
+
+            <!-- Found Card -->
+            <a href="#report?type=found" class="flex items-center gap-4 p-5 rounded-2xl bg-white dark:bg-slate-900 border-2 border-emerald-100 dark:border-emerald-950 hover:border-emerald-400 dark:hover:border-emerald-500 hover:shadow-md transition text-left group">
+              <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 text-2xl group-hover:scale-110 transition shrink-0">
+                🤝
+              </div>
+              <div>
+                <h3 class="font-bold text-slate-900 dark:text-white text-base group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition">I Found Something</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Help someone reunite with their item</p>
+              </div>
+            </a>
+          </div>
+
+          <!-- Quick Search Bar -->
+          <div class="mt-8 max-w-2xl mx-auto">
+            <form onsubmit="handleQuickSearch(event)" class="relative flex items-center">
+              <input type="text" id="quick-search-input" placeholder="Search by name or place (e.g., 'MacBook', 'Keys', 'Library')..." class="w-full rounded-2xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white py-3.5 pl-11 pr-24 text-sm shadow-sm placeholder:text-slate-400 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:focus:ring-indigo-900">
+              <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-slate-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+              </div>
+              <button type="submit" class="absolute right-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 px-4 py-2 text-xs font-bold text-white transition">Search</button>
+            </form>
+          </div>
+
+          <!-- Category Quick Chips -->
+          <div class="mt-4 flex flex-wrap justify-center gap-1.5 text-xs">
+            <span class="text-slate-400 dark:text-slate-500 py-1 font-medium">Popular:</span>
+            <button onclick="filterByCategory('Electronics')" class="px-3 py-1 rounded-full bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-semibold">💻 Electronics</button>
+            <button onclick="filterByCategory('Keys')" class="px-3 py-1 rounded-full bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-semibold">🔑 Keys</button>
+            <button onclick="filterByCategory('Wallets & Bags')" class="px-3 py-1 rounded-full bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-semibold">🎒 Wallets & Bags</button>
+            <button onclick="filterByCategory('Cards & IDs')" class="px-3 py-1 rounded-full bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-semibold">🪪 IDs</button>
+            <button onclick="filterByCategory('Other')" class="px-3 py-1 rounded-full bg-white dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-semibold">📦 More...</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Community Listings -->
+      <div class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">Recent Community Items</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Click any item to view photos and contact information safely</p>
+          </div>
+          <!-- Clean Filter Pills -->
+          <div class="flex items-center gap-1 p-1 bg-slate-200/80 dark:bg-slate-800 rounded-xl text-xs font-bold self-start">
+            <button onclick="filterHomeReports('all')" class="home-tab-btn active px-3.5 py-1.5 rounded-lg bg-white dark:bg-slate-900 shadow-xs text-slate-900 dark:text-white" data-filter="all">All</button>
+            <button onclick="filterHomeReports('lost')" class="home-tab-btn px-3.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" data-filter="lost">🔴 Lost</button>
+            <button onclick="filterHomeReports('found')" class="home-tab-btn px-3.5 py-1.5 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white" data-filter="found">🟢 Found</button>
+          </div>
+        </div>
+
+        <!-- Cards Grid -->
+        <div id="home-reports-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+        <div class="text-center mt-10">
+          <a href="#explore" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 font-bold text-slate-700 dark:text-slate-200 hover:border-indigo-400 dark:hover:border-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition shadow-xs text-sm">
+            <span>Browse All Listings &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: EXPLORE & SEARCH VIEW -->
+    <section id="view-explore" class="view-section hidden mx-auto max-w-6xl px-4 sm:px-6 py-8">
+      <div class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">Browse Listings</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Search and filter community listings</p>
+      </div>
+
+      <!-- Clean Search Card -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 shadow-xs mb-6 space-y-3">
+        <div class="flex gap-2">
+          <!-- Input -->
+          <div class="relative flex-1">
+            <input type="text" id="explore-search-input" placeholder="Search keywords (e.g. 'MacBook', 'Fossil wallet', 'Keys')..." class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white py-2.5 pl-10 pr-4 text-sm focus:border-indigo-500 focus:outline-none">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+            </div>
+          </div>
+        </div>
+
+        <div id="natural-parsed-tags" class="hidden flex flex-wrap gap-1.5 text-[11px] pt-1"></div>
+
+        <!-- Filter Row -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
+          <div>
+            <label class="block font-bold text-slate-500 dark:text-slate-400 mb-1">Type</label>
+            <select id="filter-type" class="w-full rounded-lg border border-slate-300 dark:border-slate-700 p-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+              <option value="all">All Items</option>
+              <option value="lost">Lost Only</option>
+              <option value="found">Found Only</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-500 dark:text-slate-400 mb-1">Category</label>
+            <select id="filter-category" class="w-full rounded-lg border border-slate-300 dark:border-slate-700 p-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+              <option value="all">All Categories</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Keys">Keys</option>
+              <option value="Wallets & Bags">Wallets & Bags</option>
+              <option value="Clothing & Accessories">Clothing</option>
+              <option value="Cards & IDs">Cards & IDs</option>
+              <option value="Jewelry & Watches">Jewelry</option>
+              <option value="Books & Documents">Books & Docs</option>
+              <option value="Pets">Pets</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-500 dark:text-slate-400 mb-1">Status</label>
+            <select id="filter-status" class="w-full rounded-lg border border-slate-300 dark:border-slate-700 p-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+              <option value="all">All Statuses</option>
+              <option value="open">Open</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-500 dark:text-slate-400 mb-1">Location</label>
+            <input type="text" id="filter-location" placeholder="e.g. 'Library', 'Gym'" class="w-full rounded-lg border border-slate-300 dark:border-slate-700 p-2 bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none">
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Header -->
+      <div class="flex items-center justify-between mb-4">
+        <p class="text-xs text-slate-500 dark:text-slate-400 font-semibold" id="results-count">Loading listings...</p>
+        <button onclick="resetExploreFilters()" class="text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 font-bold">Clear Filters</button>
+      </div>
+
+      <!-- Results Grid -->
+      <div id="explore-reports-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </section>
+
+    <!-- VIEW 3: REPORT AN ITEM -->
+    <section id="view-report" class="view-section hidden mx-auto max-w-2xl px-4 sm:px-6 py-8">
+      <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-xs">
+        <div class="mb-6">
+          <span class="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider">Simple Submission</span>
+          <h1 class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">Post a Report</h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Takes under 60 seconds. Post details so finders or owners can reach you.</p>
+        </div>
+
+        <form id="report-form" class="space-y-5">
+          <!-- Step 1: Big Visual Toggle -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-2">1. Choose Type <span class="text-rose-500">*</span></label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="flex items-center justify-center gap-2 p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 cursor-pointer hover:border-rose-400 dark:hover:border-rose-500 transition has-[:checked]:border-rose-600 dark:has-[:checked]:border-rose-500 has-[:checked]:bg-rose-50/40 dark:has-[:checked]:bg-rose-950/30">
+                <input type="radio" name="reportType" value="lost" checked class="text-rose-600 focus:ring-rose-500">
+                <span class="text-sm font-bold text-slate-800 dark:text-slate-200">🔴 I Lost This</span>
+              </label>
+              <label class="flex items-center justify-center gap-2 p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 cursor-pointer hover:border-emerald-400 dark:hover:border-emerald-500 transition has-[:checked]:border-emerald-600 dark:has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-50/40 dark:has-[:checked]:bg-emerald-950/30">
+                <input type="radio" name="reportType" value="found" class="text-emerald-600 focus:ring-emerald-500">
+                <span class="text-sm font-bold text-slate-800 dark:text-slate-200">🟢 I Found This</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Step 2: Item Name -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">2. What is the item? <span class="text-rose-500">*</span></label>
+            <input type="text" id="form-title" required placeholder="e.g. Silver MacBook Pro 14-inch, or Set of brass keys with blue clip" class="w-full text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 focus:border-indigo-500 outline-none">
+          </div>
+
+          <!-- Step 3: Category & Date -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Category <span class="text-rose-500">*</span></label>
+              <select id="form-category" required class="w-full text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 outline-none">
+                <option value="">Select category</option>
+                <option value="Electronics">💻 Electronics</option>
+                <option value="Keys">🔑 Keys</option>
+                <option value="Wallets & Bags">🎒 Wallets & Bags</option>
+                <option value="Clothing & Accessories">🧥 Clothing</option>
+                <option value="Cards & IDs">🪪 Cards & IDs</option>
+                <option value="Jewelry & Watches">⌚ Jewelry</option>
+                <option value="Books & Documents">📚 Books & Docs</option>
+                <option value="Pets">🐾 Pets</option>
+                <option value="Other">📦 Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Date <span class="text-rose-500">*</span></label>
+              <input type="date" id="form-date" required class="w-full text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 outline-none">
+            </div>
+          </div>
+
+          <!-- Step 4: Location -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Where was it lost or found? <span class="text-rose-500">*</span></label>
+            <input type="text" id="form-location" required placeholder="e.g. Library 2nd floor, Quad benches, Dining Hall" class="w-full text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 focus:border-indigo-500 outline-none">
+          </div>
+
+          <!-- Step 5: Description (Optional) -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Description (Optional)</label>
+            <textarea id="form-description" rows="3" placeholder="Add any helpful details (color, condition, unique marks, stickers)." class="w-full text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 focus:border-indigo-500 outline-none"></textarea>
+          </div>
+
+          <!-- Step 6: Contact Phone Number (Split Country Code & 10-Digit Number in One Row) -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Contact Phone Number <span class="text-rose-500">*</span></label>
+            <div class="flex items-center gap-2">
+              <div class="w-32 shrink-0">
+                <select id="form-country-code" class="w-full text-sm font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 outline-none">
+                  <option value="+91">🇮🇳 +91</option>
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+44">🇬🇧 +44</option>
+                  <option value="+61">🇦🇺 +61</option>
+                  <option value="+81">🇯🇵 +81</option>
+                  <option value="+49">🇩🇪 +49</option>
+                  <option value="+33">🇫🇷 +33</option>
+                  <option value="+971">🇦🇪 +971</option>
+                  <option value="+65">🇸🇬 +65</option>
+                  <option value="+86">🇨🇳 +86</option>
+                </select>
+              </div>
+              <div class="flex-1">
+                <input type="tel" id="form-phone" required maxlength="10" placeholder="10-digit number (e.g. 9876543210)" class="w-full text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-3 focus:border-indigo-500 outline-none font-mono">
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-1">Enter exactly 10 digits without country code. Other members will call this number directly.</p>
+          </div>
+
+          <!-- Step 7: Photo Upload -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Add Photo (Optional)</label>
+            <div id="image-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-5 text-center hover:border-indigo-400 dark:hover:border-indigo-500 transition cursor-pointer bg-slate-50/50 dark:bg-slate-850">
+              <div id="dropzone-prompt">
+                <span class="text-2xl mb-1 block">📷</span>
+                <p class="text-xs text-slate-600 dark:text-slate-300 font-semibold">Click or drag a photo here</p>
+                <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">PNG, JPG, WebP up to 5MB</p>
+              </div>
+              <div id="image-preview-container" class="hidden relative inline-block">
+                <img id="image-preview" src="" alt="Preview" class="max-h-40 rounded-xl object-contain shadow-xs">
+                <button type="button" id="btn-remove-image" class="absolute -top-2 -right-2 bg-rose-600 text-white rounded-full p-1 hover:bg-rose-700 shadow-md">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
+              <input type="file" id="form-image-file" accept="image/*" class="hidden">
+            </div>
+          </div>
+
+          <!-- Submit Button Area with Red Color Radius Hint for Matching Found Items -->
+          <div id="publish-button-area" class="transition-all duration-300 rounded-2xl p-1">
+            <!-- Dynamic Red Hint / Alert for Matching Found Items -->
+            <div id="found-match-hint" class="hidden mb-3 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/80 border-2 border-rose-500 text-rose-900 dark:text-rose-100 shadow-sm animate-pulse">
+              <div class="flex items-start gap-3">
+                <span class="text-2xl">🚨</span>
+                <div class="flex-1">
+                  <div class="flex items-center justify-between">
+                    <h4 class="font-extrabold text-xs uppercase tracking-wide text-rose-700 dark:text-rose-300">Wait! A Matching "Found" Item Was Already Reported</h4>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-200 dark:bg-rose-900 text-rose-800 dark:text-rose-200 uppercase">Match Found</span>
+                  </div>
+                  <p id="found-match-text" class="text-xs text-rose-700 dark:text-rose-200 mt-1 leading-relaxed">
+                    Someone has reported finding an item that matches one of your keywords.
+                  </p>
+                  <div class="mt-3 flex items-center gap-2">
+                    <button type="button" id="btn-redirect-explore-match" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition inline-flex items-center gap-1.5 shadow-sm">
+                      <span>🔍 Check Matching Found Item in Browse All &rarr;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="btn-submit-report" class="w-full py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm shadow-md shadow-indigo-200 dark:shadow-none transition">
+              Publish Item
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- VIEW 4: MY REPORTS -->
+    <section id="view-my-reports" class="view-section hidden mx-auto max-w-6xl px-4 sm:px-6 py-8">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">My Items</h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Manage your listings and mark them as open or closed</p>
+        </div>
+        <a href="#report" class="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-700 transition self-start shadow-xs">
+          + Create New Report
+        </a>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex gap-1.5 overflow-x-auto pb-2 border-b border-slate-200 dark:border-slate-800 mb-6 text-xs font-bold">
+        <button onclick="filterMyReports('all')" class="my-tab-btn active px-3.5 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800" data-status="all">All</button>
+        <button onclick="filterMyReports('open')" class="my-tab-btn px-3.5 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-status="open">Open</button>
+        <button onclick="filterMyReports('closed')" class="my-tab-btn px-3.5 py-2 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-status="closed">Closed</button>
+      </div>
+
+      <div id="my-reports-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+    </section>
+
+    <!-- VIEW 4: ADMIN PANEL -->
+    <section id="view-admin" class="view-section hidden mx-auto max-w-6xl px-4 sm:px-6 py-8">
+      <div class="mb-6">
+        <span class="text-xs font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider">Moderation & Analytics</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Admin Dashboard</h1>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Live inventory monitoring and status control</p>
+      </div>
+
+      <!-- 6 Key Metrics Requested -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6 text-xs">
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <p class="font-bold text-rose-600 dark:text-rose-400 uppercase text-[11px]">Lost & Not Found</p>
+          <p id="admin-lost-open" class="text-2xl font-extrabold text-rose-600 dark:text-rose-400 mt-1">0</p>
+          <span class="text-[10px] text-slate-400">Open lost items</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <p class="font-bold text-emerald-600 dark:text-emerald-400 uppercase text-[11px]">Found & Not Collected</p>
+          <p id="admin-found-open" class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1">0</p>
+          <span class="text-[10px] text-slate-400">Open found items</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <p class="font-bold text-slate-600 dark:text-slate-300 uppercase text-[11px]">Lost & Collected</p>
+          <p id="admin-lost-closed" class="text-2xl font-extrabold text-slate-700 dark:text-slate-200 mt-1">0</p>
+          <span class="text-[10px] text-slate-400">Closed lost items</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <p class="font-bold text-slate-600 dark:text-slate-300 uppercase text-[11px]">Found & Collected</p>
+          <p id="admin-found-closed" class="text-2xl font-extrabold text-slate-700 dark:text-slate-200 mt-1">0</p>
+          <span class="text-[10px] text-slate-400">Closed found items</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <p class="font-bold text-indigo-600 dark:text-indigo-400 uppercase text-[11px]">Total Resolved</p>
+          <p id="admin-total-closed" class="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-1">0</p>
+          <span class="text-[10px] text-slate-400">Lost + Found collected</span>
+        </div>
+        <div class="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <p class="font-bold text-slate-700 dark:text-slate-300 uppercase text-[11px]">Total Listings</p>
+          <p id="admin-total-items" class="text-2xl font-extrabold text-slate-900 dark:text-white mt-1">0</p>
+          <span class="text-[10px] text-slate-400">All inventory items</span>
+        </div>
+      </div>
+
+      <!-- All Reports Moderation Table -->
+      <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-xs">
+        <div class="p-3.5 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between">
+          <h2 class="font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">All Community Listings</h2>
+          <span class="text-xs text-slate-500 dark:text-slate-400">Admin can toggle any status between Open & Closed</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 uppercase border-b border-slate-200 dark:border-slate-800">
+              <tr>
+                <th class="p-3">Title & Category</th>
+                <th class="p-3">Type</th>
+                <th class="p-3">Poster (Name & ID)</th>
+                <th class="p-3">Contact Phone</th>
+                <th class="p-3">Location & Date</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 text-right">Modify Status</th>
+              </tr>
+            </thead>
+            <tbody id="admin-reports-table" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. ITEM DETAILS MODAL -->
+  <div id="modal-details" class="hidden fixed inset-0 z-50 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 dark:border-slate-800">
+      <div class="p-6">
+        <div class="flex items-start justify-between gap-4">
+          <div id="modal-details-badges" class="flex flex-wrap gap-2 items-center"></div>
+          <button onclick="closeDetailsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          </button>
+        </div>
+
+        <h2 id="modal-details-title" class="text-xl font-bold text-slate-900 dark:text-white mt-3"></h2>
+
+        <div class="mt-2 flex flex-wrap gap-3 text-xs text-slate-500 dark:text-slate-400 pb-3 border-b border-slate-100 dark:border-slate-800">
+          <span id="modal-details-category" class="font-bold text-slate-700 dark:text-slate-300"></span>
+          <span id="modal-details-location"></span>
+          <span id="modal-details-date"></span>
+        </div>
+
+        <!-- Poster Info: Name & ID -->
+        <div class="my-3 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl flex items-center justify-between text-xs">
+          <div>
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">Posted By</span>
+            <span id="modal-details-owner" class="font-bold text-slate-800 dark:text-slate-100"></span>
+          </div>
+          <div class="text-right">
+            <span class="text-[10px] font-bold uppercase text-slate-400 block">User ID</span>
+            <code id="modal-details-owner-id" class="font-mono text-indigo-600 dark:text-indigo-400 text-[11px]"></code>
+          </div>
+        </div>
+
+        <div id="modal-details-images" class="my-4"></div>
+
+        <div class="my-3">
+          <h3 class="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase mb-1">Details</h3>
+          <p id="modal-details-description" class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-xl"></p>
+        </div>
+
+        <!-- Direct Contact Info Banner (Direct Phone Contact Only) -->
+        <div class="mt-5 p-4 rounded-2xl bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            <p class="text-xs font-bold text-indigo-900 dark:text-indigo-200">Direct Contact Information</p>
+            <p class="text-xs text-slate-600 dark:text-slate-400 mt-0.5">Call to arrange in-person handover and offline proof check.</p>
+          </div>
+          <a id="modal-details-call-link" href="#" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs inline-flex items-center gap-1.5 transition shadow-sm shrink-0">
+            <span>📞 Call</span>
+            <span id="modal-details-call-number"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CUSTOM AUTH MODAL -->
+  <div id="modal-auth" class="hidden fixed inset-0 z-50 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-4">
+        <h3 id="auth-modal-title" class="text-base font-bold text-slate-900 dark:text-white">Sign In</h3>
+        <button onclick="closeAuthModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="flex border-b border-slate-200 dark:border-slate-800 mb-4 text-xs font-bold text-center">
+        <button id="auth-tab-login" onclick="toggleAuthTab('login')" class="flex-1 py-2 border-b-2 border-indigo-600 text-indigo-600 dark:text-indigo-400">Sign In</button>
+        <button id="auth-tab-register" onclick="toggleAuthTab('register')" class="flex-1 py-2 border-b-2 border-transparent text-slate-500 dark:text-slate-400">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+          <input type="email" id="login-email" required placeholder="your.name@campus.edu" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none focus:border-indigo-500">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">Sign In</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" class="hidden space-y-3.5 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Full Name</label>
+          <input type="text" id="reg-name" required placeholder="Alex Rivera" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Email Address</label>
+          <input type="email" id="reg-email" required placeholder="alex@campus.edu" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none focus:border-indigo-500">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Account Role</label>
+          <select id="reg-role" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none">
+            <option value="user">Regular User</option>
+            <option value="admin">Campus Admin / Moderator</option>
+          </select>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. EDIT REPORT MODAL -->
+  <div id="modal-edit-report" class="hidden fixed inset-0 z-50 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-800">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Edit Listing</h3>
+        <button onclick="closeEditModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+      <form id="edit-report-form" class="space-y-3.5 text-xs">
+        <input type="hidden" id="edit-report-id">
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Title</label>
+          <input type="text" id="edit-title" required class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Category</label>
+            <select id="edit-category" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none">
+              <option value="Electronics">Electronics</option>
+              <option value="Keys">Keys</option>
+              <option value="Wallets & Bags">Wallets & Bags</option>
+              <option value="Clothing & Accessories">Clothing</option>
+              <option value="Cards & IDs">Cards & IDs</option>
+              <option value="Jewelry & Watches">Jewelry</option>
+              <option value="Books & Documents">Books & Docs</option>
+              <option value="Pets">Pets</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Status</label>
+            <select id="edit-status" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none">
+              <option value="open">Open</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Contact Phone Number</label>
+          <div class="flex items-center gap-2">
+            <div class="w-28 shrink-0">
+              <select id="edit-country-code" class="w-full text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none">
+                <option value="+91">🇮🇳 +91</option>
+                <option value="+1">🇺🇸 +1</option>
+                <option value="+44">🇬🇧 +44</option>
+                <option value="+61">🇦🇺 +61</option>
+                <option value="+81">🇯🇵 +81</option>
+                <option value="+49">🇩🇪 +49</option>
+                <option value="+33">🇫🇷 +33</option>
+                <option value="+971">🇦🇪 +971</option>
+                <option value="+65">🇸🇬 +65</option>
+                <option value="+86">🇨🇳 +86</option>
+              </select>
+            </div>
+            <div class="flex-1">
+              <input type="tel" id="edit-phone" required maxlength="10" placeholder="10-digit number" class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none font-mono">
+            </div>
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Location</label>
+          <input type="text" id="edit-location" required class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 dark:text-slate-300 mb-1">Description (Optional)</label>
+          <textarea id="edit-description" rows="3" placeholder="Additional details..." class="w-full rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white p-2.5 outline-none"></textarea>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition">Save Changes</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. CLOUD SETTINGS MODAL -->
+  <div id="modal-settings" class="hidden fixed inset-0 z-50 bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 dark:border-slate-800 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">⚙️</span>
+          <h3 class="text-base font-bold text-slate-900 dark:text-white">Cloud Firestore Status</h3>
+        </div>
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Live Status Cards -->
+      <div class="space-y-4 text-xs">
+        <!-- Database & Persistence Status -->
+        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px]">📁 Database & Cloud Persistence</span>
+            <span id="settings-db-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Firestore Active</span>
+          </div>
+          <p id="settings-db-type" class="text-slate-700 dark:text-slate-300 font-semibold">Cloud Database: <code class="text-indigo-600 dark:text-indigo-400 font-mono">Google Cloud Firestore</code></p>
+          <p class="text-slate-500 dark:text-slate-400 text-[11px]">All reports, matches, users, claims, and actions are stored 100% in Google Cloud Firestore. Pure cloud-first architecture: no local file storage and zero browser localStorage.</p>
+        </div>
+
+        <!-- Firebase Cloud Setup Guide -->
+        <div class="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px]">🔥 Firebase Cloud Firestore</span>
+            <span id="settings-fb-badge" class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">Connected</span>
+          </div>
+          <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-[11px]">
+            Connected directly via Google Cloud Firestore Admin SDK using serviceAccountKey.json.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= TOAST CONTAINER ================= -->
+  <div id="toast-container" class="fixed bottom-5 left-5 z-50 space-y-2 pointer-events-none"></div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-center text-xs text-slate-500 dark:text-slate-400">
+    <div class="mx-auto max-w-6xl px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div class="flex items-center gap-1.5 font-bold text-slate-800 dark:text-slate-200">
+        <span>🔍 find<span class="text-indigo-600 dark:text-indigo-400">ly</span></span>
+        <span class="text-slate-400 font-normal">&bull; Community Lost & Found</span>
+      </div>
+      <p class="text-slate-400">Reuniting people with their lost belongings.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="./js/api.js"></script>
+  <script src="./js/app.js"></script>
+</body>
+</html>
