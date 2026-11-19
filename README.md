@@ -40,3 +40,8 @@ Findly is a fast, responsive, cloud-first lost-and-found web application built w
    ```bash
    node test-findly.js
    ```
+
+## Contribute
+* This project is open to contributions 
+* Fork and send a PR 
+* Happy Coding
